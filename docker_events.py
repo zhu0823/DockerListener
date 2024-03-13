@@ -1,6 +1,7 @@
 import json
 import os
 import subprocess
+from pathlib import Path
 from pprint import pprint
 
 import docker
@@ -9,15 +10,17 @@ import yaml
 
 def load_config():
 
-    file_path = 'config.yaml'
+    path_search = (
+        'config.yaml',
+        '/app/config.yaml'
+    )
 
-    if os.getenv('DOCKER_ENV', False):
-        file_path = '/config/config.yaml'
+    file_path = list(path for path in path_search if os.path.exists(path))
 
-    if not os.path.exists(file_path):
+    if len(file_path) == 0:
         raise '配置文件不存在'
 
-    with open(file_path, 'r', encoding='utf-8') as file:
+    with open(file_path[0], 'r', encoding='utf-8') as file:
         config = yaml.safe_load(file)
         parse_config(config=config)
 
