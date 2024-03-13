@@ -3,7 +3,7 @@ LABEL authors="zhu0823"
 
 WORKDIR /app
 
-COPY ../DockerListener /app
+COPY . /app
 
 RUN pip install --no-cache-dir -r requirements.txt
 
