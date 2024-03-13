@@ -24,9 +24,9 @@ containers:
 tip: 目录执行前会修改权限为777
 
 ## 三、挂载目录
-- ./config:/config
-- ./scripts:/scripts
-- /var/run/docker.sock:/var/run/docker.sock
+- ./config:/config  # 配置文件目录
+- ./scripts:/scripts  # 脚本文件目录
+- /var/run/docker.sock:/var/run/docker.sock  # 固定值
 
 ## 四、运行
 ```
