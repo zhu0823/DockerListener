@@ -1,0 +1,8 @@
+containers:
+  - name: get-start
+    events:
+      start: /scripts/start.sh
+      stop: /scripts/stop.sh
+  - name: get-start-2
+    events:
+      start: /scripts/start.sh

@@ -1,0 +1,28 @@
+# 忽略系统和编辑器生成的文件
+.DS_Store         # macOS 系统文件
+Thumbs.db         # Windows 系统文件
+.vscode/          # Visual Studio Code 配置目录
+*.sublime-project # Sublime Text 项目文件
+*.sublime-workspace # Sublime Text 工作空间文件
+
+# 忽略虚拟环境
+venv/             # Python 虚拟环境目录
+
+# 忽略依赖和构建文件
+*.log             # 日志文件
+*.pyc             # Python 编译文件
+*.pyo             # Python 优化文件
+*.pyd             # Python 动态库文件
+# Python 缓存目录,注释写在同一行会不生效
+__pycache__/
+dist/             # 打包目录
+build/            # 构建目录
+*.egg-info/       # 包信息目录
+
+# 忽略本地配置文件
+.env              # 环境变量配置文件
+config.json       # 配置文件
+/config.json
+/config.yaml
+.idea
+scripts/
