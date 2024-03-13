@@ -37,3 +37,8 @@ docker run -d --name docker-listener \
 -v /var/run/docker.sock:/var/run/docker.sock \
 zhu0823/docker-listener:latest
 ```
+
+TODO
+- [x] 监听容器事件
+- [x] 执行自定义脚本
+- [ ] 多容器并行执行脚本
