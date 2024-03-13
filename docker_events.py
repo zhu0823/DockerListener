@@ -1,15 +1,18 @@
 import json
 import os
 import subprocess
-from pathlib import Path
+import threading
 from pprint import pprint
 
 import docker
 import yaml
 
 
-def load_config():
+handing_event = False
 
+
+def load_config():
+    """加载配置文件"""
     path_search = (
         'config.yaml',
         '/config/config.yaml'
@@ -26,6 +29,7 @@ def load_config():
 
 
 def parse_config(config: json):
+    """解析配置文件"""
     # 所有容器
     containers = config['containers']
 
@@ -47,28 +51,38 @@ def parse_config(config: json):
 
 
 def bind_event(names: [str], valid_events: {}):
+    """绑定事件"""
+
+    global handing_event
+
     client = docker.from_env()
     events = client.events(filters={"container": names}, decode=True)
     try:
         for event in events:
-            print(f'事件：{event}')
-            name = event['Actor']['Attributes']['name']
-            if name in names:
-
-                event_model = valid_events[name]
-
-                if event['status'] in list(event_model.keys()):
-                    print('捕获事件：', name, event.get('status'), event_model[event["status"]])
-                    subprocess.run(f'chmod 777 {event_model[event["status"]]}', shell=True)
-                    subprocess.run(f'sh {event_model[event["status"]]}', shell=True)
+            # 检查是否正在处理事件，如果是，则跳过后续事件处理
+            if handing_event:
+                print('事件处理中，跳过...')
+                continue
+            thread = threading.Thread(target=handle_event, args=(event, names, valid_events))
+            thread.start()
     except KeyboardInterrupt:
         print('程序已停止')
 
 
-def scripts_path() -> str:
-    docker_env = os.getenv('DOCKER_ENV', default=False)
+def handle_event(event, names, valid_events):
+    """处理事件"""
+    print(f'事件：{event}')
 
-    if docker_env.lower() == 'true':
-        return '/app/scripts'
-    else:
-        return './scripts'
+    global handing_event
+
+    name = event['Actor']['Attributes']['name']
+    if name in names:
+
+        event_model = valid_events[name]
+
+        if event['status'] in list(event_model.keys()):
+            print('捕获事件：', name, event.get('status'), event_model[event["status"]])
+            handing_event = True
+            subprocess.run(f'chmod 777 {event_model[event["status"]]}', shell=True)
+            subprocess.run(f'sh {event_model[event["status"]]}', shell=True)
+            handing_event = False
