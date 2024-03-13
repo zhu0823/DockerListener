@@ -12,7 +12,7 @@ def load_config():
 
     path_search = (
         'config.yaml',
-        '/app/config.yaml'
+        '/config/config.yaml'
     )
 
     file_path = list(path for path in path_search if os.path.exists(path))
