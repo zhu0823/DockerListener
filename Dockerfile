@@ -6,6 +6,7 @@ WORKDIR /app
 
 COPY . /app
 
+RUN apt-get update && apt-get install -y rsync
 RUN pip install --no-cache-dir -r requirements.txt
 
 ENV TZ="Asia/Shanghai"
