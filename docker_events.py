@@ -2,7 +2,6 @@ import json
 import os
 import subprocess
 import threading
-from pprint import pprint
 import docker
 import yaml
 from logger import logger
@@ -80,7 +79,7 @@ def handle_event(event, names, valid_events):
         event_model = valid_events[name]
 
         if event['status'] in list(event_model.keys()):
-            logger.debug('捕获事件：', name, event.get('status'), event_model[event["status"]])
+            logger.debug(f'捕获事件：%s, %s, %s', name, event.get('status'), event_model[event["status"]])
             handing_event = True
             run_command(f'chmod 777 {event_model[event["status"]]}')
             run_command(f'sh {event_model[event["status"]]}')

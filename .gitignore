@@ -26,3 +26,4 @@ config.json       # 配置文件
 /config.yaml
 .idea
 scripts/
+logs/

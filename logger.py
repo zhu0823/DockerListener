@@ -1,13 +1,15 @@
 import logging
+import sys
 from logging.handlers import RotatingFileHandler
 
 
 def setup_logger(name, log_file, max_bytes=10485760, backup_count=5):
 
     _logger = logging.getLogger(name)
+    _logger.setLevel(logging.DEBUG)
 
     file_handler = RotatingFileHandler(log_file, maxBytes=max_bytes, backupCount=backup_count)
-    console_handler = logging.StreamHandler()
+    console_handler = logging.StreamHandler(sys.stdout)
 
     file_handler.setLevel(logging.DEBUG)
     console_handler.setLevel(logging.INFO)
