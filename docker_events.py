@@ -82,6 +82,17 @@ def handle_event(event, names, valid_events):
         if event['status'] in list(event_model.keys()):
             logger.debug('捕获事件：', name, event.get('status'), event_model[event["status"]])
             handing_event = True
-            subprocess.run(f'chmod 777 {event_model[event["status"]]}', shell=True)
-            subprocess.run(f'sh {event_model[event["status"]]}', shell=True)
+            run_command(f'chmod 777 {event_model[event["status"]]}')
+            run_command(f'sh {event_model[event["status"]]}')
             handing_event = False
+
+
+def run_command(command):
+    """运行命令"""
+    try:
+        result = subprocess.run(command, shell=True, capture_output=True, text=True)
+        logger.debug('Command Output: %s', result.stdout)
+        if result.stderr:
+            logger.error("Command Error: %s", result.stderr)
+    except Exception as e:
+        logger.error("Command Exception: %s", str(e))
