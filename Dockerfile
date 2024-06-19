@@ -16,6 +16,6 @@ ENV UMASK=022
 
 EXPOSE 8010
 
-VOLUME ["/config", "/scripts"]
+VOLUME ["/config", "/scripts", "/logs"]
 
 CMD ["python", "main.py"]

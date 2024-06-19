@@ -3,10 +3,9 @@ import os
 import subprocess
 import threading
 from pprint import pprint
-
 import docker
 import yaml
-
+from logger import logger
 
 handing_event = False
 
@@ -42,10 +41,10 @@ def parse_config(config: json):
         valid_events = {key: value for key, value in events.items() if os.path.exists(value)}
 
         if len(valid_events) == 0:
-            print(f'容器{name}没有有效的事件')
+            logger.debug(f'容器{name}没有有效的事件')
         else:
             valid_entity[name] = valid_events
-            pprint(f'有效事件 {name}: {valid_events}')
+            logger.debug(f'有效事件 {name}: {valid_events}')
 
     bind_event(names=list(valid_entity.keys()), valid_events=valid_entity)
 
@@ -61,17 +60,17 @@ def bind_event(names: [str], valid_events: {}):
         for event in events:
             # 检查是否正在处理事件，如果是，则跳过后续事件处理
             if handing_event:
-                print('事件处理中，跳过...')
+                logger.debug('事件处理中，跳过...')
                 continue
             thread = threading.Thread(target=handle_event, args=(event, names, valid_events))
             thread.start()
     except KeyboardInterrupt:
-        print('程序已停止')
+        logger.info('程序已停止')
 
 
 def handle_event(event, names, valid_events):
     """处理事件"""
-    print(f'事件：{event}')
+    logger.debug(f'事件：{event}')
 
     global handing_event
 
@@ -81,7 +80,7 @@ def handle_event(event, names, valid_events):
         event_model = valid_events[name]
 
         if event['status'] in list(event_model.keys()):
-            print('捕获事件：', name, event.get('status'), event_model[event["status"]])
+            logger.debug('捕获事件：', name, event.get('status'), event_model[event["status"]])
             handing_event = True
             subprocess.run(f'chmod 777 {event_model[event["status"]]}', shell=True)
             subprocess.run(f'sh {event_model[event["status"]]}', shell=True)
